@@ -46,7 +46,7 @@ $.get("https://sleepy-meadow-58897.herokuapp.com/accounts")
 							$(current).siblings(".status").removeClass("available").addClass("using").text("USING")
 						});
 					return putFunction;
-				}(), 10000);
+				}(), time_diff);
 			})
 		} else {
 			div.addClass("error");
