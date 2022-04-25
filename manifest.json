@@ -23,7 +23,7 @@
     "128": "/images/get_started128.png"
   },
   "content_scripts": [{
-    "matches": ["https://www.google.com/*"],
+    "matches": ["https://login.wolterskluwer.eu/*"],
     "js": ["jquery.min.js","script.js"],
     "css": ["style.css"],
     "run_at": "document_end"

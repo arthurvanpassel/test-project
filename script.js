@@ -52,7 +52,7 @@ function startUpdateUser(index) {
 	}, time_diff);
 }
 
-$("body").prepend("<div class='login-info waiting'><div class='lds-roller'><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>")
+$(".wk-page-content").prepend("<div class='login-info waiting'><div class='lds-roller'><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>")
 var div = $(".login-info");
 $.get(url + "/accounts")
 	.always(function () {
@@ -122,6 +122,7 @@ $.get(url + "/accounts")
 				const current = this
 				if ($(current).hasClass('fillIn')) {
 					var index = $(current).parents(".login-item").attr("id");
+					$('#username').val($(current).siblings(".email").text())
 					$.ajax({
 							url: url + "/accounts/" + index + "/active",
 							method: "PUT",
