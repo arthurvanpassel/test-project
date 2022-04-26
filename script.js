@@ -1,9 +1,23 @@
 // CONFIG
 var time_diff = 30000 // 30 sec
 var url = "https://sleepy-meadow-58897.herokuapp.com";
-let username, intervalUpdate;
-chrome.storage.sync.get("username", (data) => {
-	username = data.username;
+let nameChanged, intervalUpdate, username;
+chrome.storage.sync.get("nameChanged", (data) => {
+	nameChanged = data.nameChanged;
+	if (!nameChanged) {
+		username = window.prompt("Jura Login Manager\n\nFill in the text field to enter your name.\nThis will be used to view who is currently using the accounts.", "");
+		nameChanged = true
+		chrome.storage.sync.set({
+			username
+		});
+		chrome.storage.sync.set({
+			nameChanged
+		});
+	} else {
+		chrome.storage.sync.get("username", (data) => {
+			username = data.username;
+		})
+	}
 });
 // var url = "http://localhost:5000"
 // console.log(chrome.sessions.device);
@@ -32,12 +46,11 @@ function timeDifference(current, previous) {
 		} else {
 			return 'approximately ' + Math.round(elapsed / msPerYear) + ' years ago';
 		}
-	} else {
-		return 'about a day ago'
 	}
 }
 
 function startUpdateUser(index) {
+	console.log('startUpdateUser')
 	intervalUpdate = window.setInterval(function () {
 		$.ajax({
 				url: url + "/accounts/" + index + "/update",
@@ -69,6 +82,9 @@ $.get(url + "/accounts")
 				const d = new Date();
 				let time = d.getTime();
 				var still_active = time - element.last_update <= time_diff;
+				console.log("time",time)
+				console.log("element.last_update",element.last_update)
+				console.log("time diff",time - element.last_update)
 				var current_user_active = still_active && element.user == username
 				var details = "",
 					status = "",
@@ -94,8 +110,8 @@ $.get(url + "/accounts")
 					status = "available";
 					statusText = "AVAILABLE";
 					details = `
-						<div class="user"><strong>Last user: </strong>${element.user}</div>
-						<div class="time-info"><strong>Last active: </strong>${timeDifference(time, element.last_update)}</div>
+						<div class="user"><strong>Last user: </strong>${element.user ? element.user : "<em>No last user</em>"}</div>
+						<div class="time-info"><strong>Last active: </strong>${element.last_login ? timeDifference(time, element.last_login) : "<em>No last time</em>"}</div>
 					`
 					action = `<a class="action fillIn" href="#">Fill in</a>`
 				}
@@ -140,13 +156,23 @@ $.get(url + "/accounts")
 							$(current).removeClass("fillIn").addClass("endSession").text("End session");
 							startUpdateUser(index);
 						});
-				} 
-				else if ($(current).hasClass('endSession')) {
+				} else if ($(current).hasClass('endSession')) {
 					console.log("end session")
-					var index = $(current).parents(".login-item").attr("id");
 					clearInterval(intervalUpdate);
-					$(current).siblings(".status").removeClass("using").addClass("available").text("AVAILABLE");
-					$(current).removeClass("endSession").addClass("fillIn").text("Fill in");
+					var index = $(current).parents(".login-item").attr("id");
+					$.ajax({
+						url: url + "/accounts/" + index + "/stop",
+						method: "PUT"
+					})
+					.fail(function (data) {
+						div.addClass("error");
+						div.prepend(`<span>${data.status} ${data.statusText}</span>`);
+					})
+					.done(function (data) {
+						console.log("put stop session", data)
+						$(current).siblings(".status").removeClass("using").addClass("available").text("AVAILABLE");
+						$(current).removeClass("endSession").addClass("fillIn").text("Fill in");
+					});
 				}
 			})
 
