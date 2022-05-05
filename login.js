@@ -1,7 +1,4 @@
-// CONFIG
-var time_diff = 30000 // 30 sec
-var url = "https://sleepy-meadow-58897.herokuapp.com";
-let nameChanged, intervalUpdate, username;
+let nameChanged, username;
 chrome.storage.sync.get("nameChanged", (data) => {
 	nameChanged = data.nameChanged;
 	if (!nameChanged) {
@@ -19,51 +16,6 @@ chrome.storage.sync.get("nameChanged", (data) => {
 		})
 	}
 });
-// var url = "http://localhost:5000"
-// console.log(chrome.sessions.device);
-
-// HELPER FUNCTIONS
-function timeDifference(current, previous) {
-	if (previous) {
-		var msPerMinute = 60 * 1000;
-		var msPerHour = msPerMinute * 60;
-		var msPerDay = msPerHour * 24;
-		var msPerMonth = msPerDay * 30;
-		var msPerYear = msPerDay * 365;
-
-		var elapsed = current - previous;
-
-		if (elapsed < msPerMinute) {
-			return Math.round(elapsed / 1000) + ' seconds ago';
-		} else if (elapsed < msPerHour) {
-			return Math.round(elapsed / msPerMinute) + ' minutes ago';
-		} else if (elapsed < msPerDay) {
-			return Math.round(elapsed / msPerHour) + ' hours ago';
-		} else if (elapsed < msPerMonth) {
-			return 'approximately ' + Math.round(elapsed / msPerDay) + ' days ago';
-		} else if (elapsed < msPerYear) {
-			return 'approximately ' + Math.round(elapsed / msPerMonth) + ' months ago';
-		} else {
-			return 'approximately ' + Math.round(elapsed / msPerYear) + ' years ago';
-		}
-	}
-}
-
-function startUpdateUser(index) {
-	console.log('startUpdateUser')
-	intervalUpdate = window.setInterval(function () {
-		$.ajax({
-				url: url + "/accounts/" + index + "/update",
-				method: "PUT"
-			})
-			.fail(function (data) {
-				console.log(data.status, data.statusText);
-			})
-			.done(function (data) {
-				console.log("put update done", data)
-			});
-	}, time_diff);
-}
 
 $(".wk-page-content").prepend("<div class='login-info waiting'><div class='lds-roller'><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>")
 var div = $(".login-info");
@@ -139,6 +91,11 @@ $.get(url + "/accounts")
 				if ($(current).hasClass('fillIn')) {
 					var index = $(current).parents(".login-item").attr("id");
 					$('#username').val($(current).siblings(".email").text())
+					var passwords;
+					chrome.storage.sync.get("passwords", (data) => {
+						passwords = data.passwords;
+						$("#password").val(passwords[index]);
+					});
 					$.ajax({
 							url: url + "/accounts/" + index + "/active",
 							method: "PUT",

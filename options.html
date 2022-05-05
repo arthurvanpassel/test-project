@@ -2,8 +2,9 @@
 <html>
   <head>
     <link rel="stylesheet" href="style.css">
+    <script src="jquery.min.js"></script>
   </head>
-  <body>
+  <body class="options_page">
     <header>
       <h1>Manage the passwords for your accounts here!</h1>
     </header>
@@ -11,19 +12,27 @@
       <ul>
         <li>
           <label for="acc-1">email1@test.be</label>
-          <input type="text" name="account 1" id="acc-1">
+          <input data-id="0" class="password" type="text" name="account 1" id="acc-1">
+          <button class="submit" for="acc-1" type="submit">Submit</button>
+          <div class="success"><span>Password saved!</span></div>
         </li>
         <li>
           <label for="acc-2">email2@test.be</label>
-          <input type="text" name="account 2" id="acc-2">
+          <input data-id="1" class="password" type="text" name="account 2" id="acc-2">
+          <button class="submit" for="acc-2" type="submit">Submit</button>
+          <div class="success"><span>Password saved!</span></div>
         </li>
         <li>
           <label for="acc-3">email3@test.be</label>
-          <input type="text" name="account 3" id="acc-3">
+          <input data-id="2" class="password" type="text" name="account 3" id="acc-3">
+          <button class="submit" for="acc-3" type="submit">Submit</button>
+          <div class="success"><span>Password saved!</span></div>
         </li>
         <li>
           <label for="acc-4">email4@test.be</label>
-          <input type="text" name="account 4" id="acc-4">
+          <input data-id="3" class="password" type="text" name="account 4" id="acc-4">
+          <button class="submit" for="acc-4" type="submit">Submit</button>
+          <div class="success"><span>Password saved!</span></div>
         </li>
       </ul>
     </main>

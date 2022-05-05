@@ -1,3 +1,16 @@
+/* Options page */
+
+.options_page .success {
+  display: none;
+}
+
+/* Popup page */
+
+.popup_page .success {
+  display: none;
+}
+
+/* Login page */
 .wk-page-content {
   position: relative;
 }

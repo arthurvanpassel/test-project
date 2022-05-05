@@ -25,7 +25,12 @@
   },
   "content_scripts": [{
     "matches": ["https://login.wolterskluwer.eu/*"],
-    "js": ["jquery.min.js","script.js"],
+    "js": ["jquery.min.js", "shared.js", "login.js"],
+    "css": ["style.css"],
+    "run_at": "document_end"
+  },{
+    "matches": ["https://jura.kluwer.be/*"],
+    "js": ["jquery.min.js", "shared.js", "jura.js"],
     "css": ["style.css"],
     "run_at": "document_end"
   }]
